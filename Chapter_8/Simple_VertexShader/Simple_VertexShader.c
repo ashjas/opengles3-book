@@ -98,7 +98,9 @@ int Init ( ESContext *esContext )
    // Starting rotation angle for the cube
    userData->angle = 45.0f;
 
-   glClearColor ( 1.0f, 1.0f, 1.0f, 0.0f );
+   glClearColor ( 0.0f, 0.0f, 0.0f, 0.0f );
+//   glEnable(GL_CULL_FACE);
+   glEnable(GL_DEPTH_TEST);
    return GL_TRUE;
 }
 
@@ -135,7 +137,7 @@ void Update ( ESContext *esContext, float deltaTime )
    esTranslate ( &modelview, 0.0, 0.0, -2.0 );
 
    // Rotate the cube
-   esRotate ( &modelview, userData->angle, 1.0, 0.0, 1.0 );
+   esRotate ( &modelview, userData->angle, 1.0, 1.0, 1.0 );
 
    // Compute the final MVP by multiplying the
    // modevleiw and perspective matrices together
@@ -171,7 +173,37 @@ void Draw ( ESContext *esContext )
    glUniformMatrix4fv ( userData->mvpLoc, 1, GL_FALSE, ( GLfloat * ) &userData->mvpMatrix.m[0][0] );
 
    // Draw the cube
-   glDrawElements ( GL_TRIANGLES, userData->numIndices, GL_UNSIGNED_INT, userData->indices );
+   //glDrawElements ( GL_TRIANGLES, userData->numIndices, GL_UNSIGNED_INT, userData->indices );
+   for(int i =0;i<12;i++) {
+       switch (i)
+       {
+           case 0:
+           case 1:
+               glVertexAttrib4f ( 1, 1.0f, 0.0f, 0.0f, 1.0f );
+               break;
+           case 2:
+           case 3:
+               glVertexAttrib4f ( 1, 0.0f, 0.0f, 1.0f, 1.0f );
+               break;
+           case 4:
+           case 5:
+               glVertexAttrib4f ( 1, 0.0f, 1.0f, 0.0f, 1.0f );
+               break;
+           case 6:
+           case 7:
+               glVertexAttrib4f ( 1, 1.0f, 1.0f, 0.0f, 1.0f );
+               break;
+           case 8:
+           case 9:
+               glVertexAttrib4f ( 1, 0.0f, 1.0f, 1.0f, 1.0f );
+               break;
+           case 10:
+           case 11:
+               glVertexAttrib4f ( 1, 1.0f, 1.0f, 1.0f, 1.0f );
+               break;
+       }
+        glDrawElements ( GL_TRIANGLES, userData->numIndices/12, GL_UNSIGNED_INT, userData->indices+(i*3) );
+   }
 }
 
 ///
